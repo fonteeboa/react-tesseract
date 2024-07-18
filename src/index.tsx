@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './assets/styles/index.css';
 import Home from './pages/Home';
-import '../src/assets/styles/index.css';
-import '../src/assets/styles/ToggleSwitch.css';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 

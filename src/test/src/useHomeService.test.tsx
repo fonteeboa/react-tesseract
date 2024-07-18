@@ -2,7 +2,6 @@ import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import { processImage } from '../../services/ocrService';
 import { useHomeService } from '../../services/homeService';
-import { lightTheme, darkTheme } from '../../assets/styles/theme';
 
 // Mock for i18next
 jest.mock('react-i18next', () => ({
@@ -22,11 +21,9 @@ Object.assign(navigator, {
 
 const TestComponent = () => {
   const {
-    selectedFile,
     ocrText,
     loading,
     theme,
-    isCheckedTheme,
     handleFileChange,
     handleFileUpload,
     handleCopyToClipboard,

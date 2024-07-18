@@ -19,6 +19,7 @@ A ideia deste projeto surgiu como uma oportunidade de estudar a biblioteca Tesse
 
 ## Uso
 
+- Acesse a aplicação no Vercel: [tesseract](https://react-tesseract-fonteeboa.vercel.app)
 - Faça upload de uma imagem clicando no botão "Upload and Convert".
 - Aguarde enquanto o texto é extraído da imagem.
 - O texto extraído será exibido na tela.

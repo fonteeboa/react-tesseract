@@ -19,6 +19,7 @@ The idea for this project came as an opportunity to study the Tesseract.js libra
 
 ## Usage
 
+- Access the application on Vercel: [tesseract](https://react-tesseract-fonteeboa.vercel.app)
 - Upload an image by clicking the "Upload and Convert" button.
 - Wait while the text is extracted from the image.
 - The extracted text will be displayed on the screen.

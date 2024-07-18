@@ -12,7 +12,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 // Mock for useHomeService
-jest.mock('../../services/HomeService', () => ({
+jest.mock('../../services/homeService', () => ({
   useHomeService: jest.fn(),
 }));
 

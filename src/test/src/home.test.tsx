@@ -1,83 +1,144 @@
-import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import Home from '../../pages/Home';
-import { useHomeService } from '../../services/homeService';
+import React from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Home from "../../pages/Home";
 
-// Mock for i18next
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-  }),
+jest.mock("../../assets/images/logo_brand.png", () => "logo_brand.png");
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({ t: (k: string) => k }),
 }));
+jest.mock("@mui/icons-material/Brightness4", () => () => <span data-testid="icon-dark" />);
+jest.mock("@mui/icons-material/Brightness7", () => () => <span data-testid="icon-light" />);
+jest.mock("@mui/icons-material/CollectionsBookmark", () => () => <span data-testid="icon-collections" />);
+jest.mock("@mui/icons-material/East", () => () => <span data-testid="icon-east" />);
+jest.mock("../../components/FileUpload", () => (props: any) => (
+  <div data-testid="file-upload" data-loading={String(props.loading)}>
+    <button onClick={props.handleFileUpload}>do-upload</button>
+    <input
+      aria-label="file-input"
+      type="file"
+      onChange={(e) => props.handleFileChange(e as unknown as React.ChangeEvent<HTMLInputElement>)}
+    />
+  </div>
+));
 
-// Mock for useHomeService
-jest.mock('../../services/homeService', () => ({
+jest.mock("../../components/ExtractedText", () => (props: any) => (
+  <div data-testid="extracted-text" data-loading={String(props.loading)}>
+    <div data-testid="ocr-text">{props.ocrText}</div>
+    <button onClick={props.handleCopyToClipboard}>copy</button>
+    <button onClick={props.handleNewItem}>new-item</button>
+  </div>
+));
+
+const toggleThemeService = jest.fn();
+const handleFileChange = jest.fn();
+const handleFileUpload = jest.fn();
+const handleCopyToClipboard = jest.fn();
+const resetExtraction = jest.fn();
+
+jest.mock("../../services/homeService", () => ({
   useHomeService: jest.fn(),
 }));
 
-describe('Home', () => {
-  const mockUseHomeService = {
-    selectedFile: null,
-    ocrText: '',
-    loading: false,
-    theme: createTheme({
-      palette: {
-        mode: 'dark',
-      },
-      spacing: 8,
-    }),
-    isCheckedTheme: false,
-    handleFileChange: jest.fn(),
-    handleFileUpload: jest.fn(),
-    handleCopyToClipboard: jest.fn(),
-    toggleTheme: jest.fn(),
-  };
+import { useHomeService } from "../../services/homeService";
 
+function mockService({ selectedFile = null, ocrText = "", loading = false, isCheckedTheme = false } = {}) {
+  (useHomeService as jest.Mock).mockReturnValue({
+    selectedFile,
+    ocrText,
+    loading,
+    isCheckedTheme,
+    handleFileChange,
+    handleFileUpload,
+    handleCopyToClipboard,
+    toggleThemeService,
+    resetExtraction,
+  });
+}
+
+describe("<Home />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (useHomeService as jest.Mock).mockReturnValue(mockUseHomeService);
   });
 
-  const renderWithTheme = (ui: React.ReactElement) => {
-    return render(
-      <ThemeProvider theme={mockUseHomeService.theme}>
-        {ui}
-      </ThemeProvider>
-    );
-  };
-
-  it('should render correctly', () => {
-    renderWithTheme(<Home />);
-    expect(screen.getByText('title')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'toggle.theme' })).toBeInTheDocument();
+  test("render inicial (intro) com logo e botão Start; ícone de tema para modo escuro", () => {
+    mockService({ ocrText: "", loading: false, isCheckedTheme: false });
+    render(<Home />);
+    const logo = screen.getByAltText("Fonteeboa Logo");
+    expect(logo).toBeInTheDocument();
+    expect(logo.getAttribute("src")).toContain("logo_brand.png");
+    expect(screen.getByText("title")).toBeInTheDocument();
+    expect(screen.getByText("welcome.subtitle")).toBeInTheDocument();
+    const tabs = screen.getAllByRole("tab");
+    expect(tabs).toHaveLength(3);
+    expect(tabs[2]).toBeDisabled();
+    expect(screen.getByTestId("icon-dark")).toBeInTheDocument();
+    const startBtn = screen.getByRole("button", { name: "start" });
+    expect(startBtn).toBeInTheDocument();
   });
 
-  it('should call toggleTheme when theme button is clicked', () => {
-    renderWithTheme(<Home />);
-    const themeButton = screen.getByRole('button', { name: 'toggle.theme' });
-    fireEvent.click(themeButton);
-    expect(mockUseHomeService.toggleTheme).toHaveBeenCalledTimes(1);
+  test("toggle de tema aciona toggleThemeService e alterna ícone quando isCheckedTheme=true", () => {
+    mockService({ isCheckedTheme: true });
+    render(<Home />);
+    expect(screen.getByTestId("icon-light")).toBeInTheDocument();
+    const toggleBtn = screen.getByRole("button", { name: "toggle.theme" });
+    fireEvent.click(toggleBtn);
+    expect(toggleThemeService).toHaveBeenCalledTimes(1);
   });
 
-  it('should handle file selection and upload', async () => {
-    renderWithTheme(<Home />);
-    const file = new File(['dummy content'], 'example.png', { type: 'image/png' });
-
-    const uploadButton = screen.getByRole('button', { name: 'upload_and_convert' });
-    fireEvent.click(uploadButton);
-
-    const fileInput = screen.getByTestId('file-input') as HTMLInputElement;
-    fireEvent.change(fileInput, { target: { files: [file] } });
-
-    expect(mockUseHomeService.handleFileChange).toHaveBeenCalledTimes(1);
-    expect(mockUseHomeService.handleFileUpload).toHaveBeenCalledTimes(1);
+  test("navegação: intro -> upload via botão Start; FileUpload é exibido; onChange e upload funcionam", () => {
+    mockService({ ocrText: "", loading: false });
+    render(<Home />);
+    fireEvent.click(screen.getByRole("button", { name: "start" }));
+    const upload = screen.getByTestId("file-upload");
+    expect(upload).toBeInTheDocument();
+    const fileInput = screen.getByLabelText("file-input");
+    fireEvent.change(fileInput, { target: { files: [new File(["x"], "x.png", { type: "image/png" })] } });
+    expect(handleFileChange).toHaveBeenCalled();
+    fireEvent.click(screen.getByText("do-upload"));
+    expect(handleFileUpload).toHaveBeenCalled();
   });
 
-  it('should handle copy to clipboard', () => {
-    renderWithTheme(<Home />);
-    const copyButton = screen.getByRole('button', { name: 'copy.to.clipboard' });
-    fireEvent.click(copyButton);
-    expect(mockUseHomeService.handleCopyToClipboard).toHaveBeenCalledTimes(1);
+  test("abas: clicar na aba 2 (upload) e depois forçar result quando loading = true", () => {
+    mockService({ ocrText: "", loading: true });
+    render(<Home />);
+    const tabs = screen.getAllByRole("tab");
+    fireEvent.click(tabs[1]);
+    expect(screen.getByTestId("file-upload")).toBeInTheDocument();
+    expect(tabs[2]).toBeEnabled();
+    fireEvent.click(tabs[2]);
+    expect(screen.getByTestId("extracted-text")).toBeInTheDocument();
+  });
+
+  test("handleNewItem: volta para upload e chama resetExtraction", async () => {
+    mockService({ ocrText: "ok", loading: false });
+    render(<Home />);
+    await waitFor(() => {
+      expect(screen.getByTestId("extracted-text")).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText("new-item"));
+    expect(resetExtraction).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId("file-upload")).toBeInTheDocument();
+  });
+
+  test("aba result permanece desabilitada quando !hasText e !loading; navegar por abas 0/1 funciona", () => {
+    mockService({ ocrText: "", loading: false });
+    render(<Home />);
+    const tabs = screen.getAllByRole("tab");
+    expect(tabs[2]).toBeDisabled();
+    fireEvent.click(tabs[0]);
+    expect(screen.getByTestId("icon-collections")).toBeInTheDocument();
+    fireEvent.click(tabs[1]);
+    expect(screen.getByTestId("file-upload")).toBeInTheDocument();
+  });
+
+  test("botão copy no result dispara handleCopyToClipboard", async () => {
+    mockService({ ocrText: "copiar", loading: false });
+    render(<Home />);
+    await waitFor(() => {
+      expect(screen.getByTestId("extracted-text")).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText("copy"));
+    expect(handleCopyToClipboard).toHaveBeenCalledTimes(1);
   });
 });

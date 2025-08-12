@@ -1,60 +1,76 @@
-import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
-import FileUpload from '../../components/FileUpload';
-import { FileUploadProps } from '../../types';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import FileUpload from "../../components/FileUpload";
 
-// Mock for i18next
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-  }),
+// i18n mock simples (retorna a key)
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({ t: (k: string) => k }),
 }));
 
-const renderComponent = (props: Partial<FileUploadProps> = {}) => {
-  const defaultProps: FileUploadProps = {
-    selectedFile: null,
-    handleFileChange: jest.fn(),
-    handleFileUpload: jest.fn(),
-    loading: false,
-  };
-  return render(<FileUpload {...defaultProps} {...props} />);
-};
+// Ícone → span simples pra facilitar query
+jest.mock("@mui/icons-material/CloudUpload", () => () => <span data-testid="icon-upload" />);
 
-describe('FileUpload', () => {
-  it('should render correctly', () => {
-    renderComponent();
-    expect(screen.getByRole('button')).toBeInTheDocument();
-    expect(screen.getByRole('button')).toHaveTextContent('upload_and_convert');
+describe("<FileUpload />", () => {
+  const handleFileChange = jest.fn();
+  const handleFileUpload = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('should handle file selection and upload', () => {
-    const handleFileChange = jest.fn();
-    const handleFileUpload = jest.fn();
-    renderComponent({ handleFileChange, handleFileUpload });
+  function renderComp(
+    props?: Partial<React.ComponentProps<typeof FileUpload>>
+  ) {
+    const defaultProps = {
+      selectedFile: null as File | null,
+      handleFileChange,
+      handleFileUpload,
+      loading: false,
+    };
+    return render(<FileUpload {...defaultProps} {...props} />);
+  }
 
-    const fileInput = screen.getByTestId('file-input') as HTMLInputElement;
-    const button = screen.getByRole('button');
-    
-    fireEvent.click(button);
-    expect(fileInput).toBeInTheDocument();
+  test("render básico: botão de seleção, legenda de formatos, botão de upload desabilitado sem arquivo", () => {
+    renderComp();
 
-    const file = new File(['dummy content'], 'example.png', { type: 'image/png' });
-    fireEvent.change(fileInput, { target: { files: [file] } });
+    // Botão de selecionar arquivo (label)
+    const selectBtn = screen.getByRole("button", { name: "select.file" });
+    expect(selectBtn).toBeEnabled();
+    expect(screen.getByTestId("icon-upload")).toBeInTheDocument();
 
-    expect(handleFileChange).toHaveBeenCalledTimes(1);
+    // Legenda (usa a chave porque o mock de i18n retorna a própria key)
+    expect(screen.getByText("supported.formats")).toBeInTheDocument();
+
+    // Botão de extrair
+    const extractBtn = screen.getByRole("button", { name: "extract.text" });
+    expect(extractBtn).toBeDisabled();
+  });
+
+
+  test("renderiza bloco com nome do arquivo quando selectedFile existe", () => {
+    const file = new File(["x"], "image.png", { type: "image/png" });
+    renderComp({ selectedFile: file });
+
+    // texto "selected.file.name": <nome>
+    expect(screen.getByText(/selected\.file\.name/i)).toBeInTheDocument();
+    expect(screen.getByText(/image\.png/)).toBeInTheDocument();
+
+    // Agora o botão de extrair deve estar habilitado
+    const extractBtn = screen.getByRole("button", { name: "extract.text" });
+    expect(extractBtn).toBeEnabled();
+
+    // Clicar aciona handleFileUpload
+    fireEvent.click(extractBtn);
     expect(handleFileUpload).toHaveBeenCalledTimes(1);
   });
 
-  it('should disable button when loading', () => {
-    renderComponent({ loading: true });
-    const button = screen.getByRole('button');
-    expect(button).toBeDisabled();
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
-  });
+  test("estado não-loading: aria-busy=false e sem progressbar", () => {
+    const file = new File(["x"], "x.csv", { type: "text/csv" });
+    renderComp({ selectedFile: file, loading: false });
 
-  it('should enable button when not loading', () => {
-    renderComponent({ loading: false });
-    const button = screen.getByRole('button');
-    expect(button).not.toBeDisabled();
+    const extractBtn = screen.getByRole("button", { name: "extract.text" });
+    expect(extractBtn).toHaveAttribute("aria-busy", "false");
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
   });
 });

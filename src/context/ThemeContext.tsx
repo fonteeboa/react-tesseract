@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useMemo, useCallback, React
 import { ThemeProvider as MuiThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Theme, ThemeContextProps } from "../types";
-import { common } from "@mui/material/colors";
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 

@@ -16,6 +16,10 @@ jobs:
       contents: read
       pull-requests: write
 
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,6 +29,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -32,7 +37,19 @@ jobs:
       - name: Run tests and generate coverage
         run: npm test -- --coverage --watch=false
 
+      - name: Skip SonarCloud on forked PR
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork }}
+        run: |
+          echo "::notice title=SonarCloud::Pulando análise em PR de fork (secrets não disponíveis)."
+          echo "Crie uma branch no repo base ou use pull_request_target com MUITO cuidado."
+
+      - name: Check SONAR_TOKEN presence
+        if: ${{ !github.event.pull_request.head.repo.fork && env.SONAR_TOKEN == '' }}
+        run: |
+          echo "::warning title=SonarCloud::SONAR_TOKEN ausente. Adicione o secret SONAR_TOKEN no repositório/organização."
+
       - name: SonarCloud Scan
+        if: ${{ !github.event.pull_request.head.repo.fork && env.SONAR_TOKEN != '' }}
         uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ env.SONAR_TOKEN }}

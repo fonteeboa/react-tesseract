@@ -1,37 +1,64 @@
 # React Tesseract
 
 [![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
-[![Quality Gate overall Status](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=alert_status)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
-[![Quality Gate overall Status](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=security_rating)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
-[![Quality Gate overall Status](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=vulnerabilities)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
-[![Quality Gate overall Status](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=sqale_index)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
-[![Quality Gate overall Status](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=reliability_rating)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
-[![Quality Gate overall Status](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=duplicated_lines_density)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
-[![Quality Gate overall Status](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=code_smells)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
-[![Quality Gate overall Status](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
-[![Quality Gate overall Status](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=coverage)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=alert_status)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=security_rating)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=vulnerabilities)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
+[![Maintainability](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=sqale_index)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=reliability_rating)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=duplicated_lines_density)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=code_smells)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fonteeboa_react-tesseract&metric=coverage)](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract)
 
-React Tesseract é um projeto de aplicação web que permite aos usuários fazer upload de imagens, extrair texto usando OCR (Reconhecimento Óptico de Caracteres) com Tesseract.js, e copiar o texto extraído para a área de transferência. A aplicação é construída usando React e Material-UI, com suporte a temas claro e escuro.
 
-## Descrição
+📄 **English Version**: [README_EN.md](README_EN.md)
 
-A ideia deste projeto surgiu como uma oportunidade de estudar a biblioteca Tesseract.js e suas capacidades de OCR. Além disso, foi motivada pela necessidade de evitar a digitação manual de alguns textos e boletos, e pelo receio de que conversores online possam estar usando as informações para outros fins. Com esta aplicação, você pode realizar a extração de texto de forma segura e eficiente diretamente no seu navegador.
+**React Tesseract** é uma aplicação web que permite realizar upload de imagens, extrair texto via OCR (Reconhecimento Óptico de Caracteres) usando **Tesseract.js**, e copiar o texto extraído para a área de transferência.  
+Construída com **React**, **Material-UI (MUI)** e suporte a **i18n**, agora conta com melhorias significativas no sistema de **temas customizados**, organização de **tokens de cor**, e refinamentos de **UI/UX**.
 
-## Uso
+---
 
-- Acesse a aplicação no Vercel: [tesseract](https://react-tesseract-fonteeboa.vercel.app)
-- Faça upload de uma imagem clicando no botão "Upload and Convert".
-- Aguarde enquanto o texto é extraído da imagem.
-- O texto extraído será exibido na tela.
-- Clique no botão "Copy to Clipboard" para copiar o texto extraído para a área de transferência.
-- Use o botão de alternância de tema para mudar entre temas claro e escuro.
+## 🚀 Novidades e Mudanças Recentes
+- **Expansão da pool de itens de extração** para maior flexibilidade nos testes e aplicações.
+- **Rebranding completo do projeto** com nova identidade visual.
+- **Sistema de tema aprimorado**:
+  - Suporte a **light**, **dark** e **system**.
+  - Tokens organizados e cores customizadas (`palette.common`, `palette.custom`).
+  - Novo token `text.button` para personalização do texto em botões.
+- **UI refinada** usando MUI, com melhor contraste e responsividade.
+- Ajustes de **i18n** para suportar traduções mais completas e diretas no contexto.
+- Melhorias na **consistência visual** de botões, cards e modais.
+- Integração com **SonarCloud** para monitoramento contínuo de qualidade e segurança do código.
 
-## Testes
+---
 
-Os testes são escritos usando Jest e Testing Library. Eles cobrem os componentes e serviços principais para garantir que a aplicação funcione corretamente.
+## 📷 Demonstração
+Acesse a aplicação hospedada na **Vercel**:  
+🔗 [React Tesseract - Live Demo](https://react-tesseract-fonteeboa.vercel.app)
 
-## Licença
+---
 
-Este projeto está licenciado sob a Licença MIT. Veja o arquivo LICENSE para mais detalhes.
+## 📖 Como Usar
+1. **Upload**  
+   Clique no botão **"Upload and Convert"** e selecione uma imagem.
+2. **Extração**  
+   Aguarde enquanto o OCR processa o arquivo usando Tesseract.js.
+3. **Visualização**  
+   O texto extraído será exibido na tela.
+4. **Cópia**  
+   Clique em **"Copy to Clipboard"** para copiar o texto.
+5. **Tema**  
+   Use o alternador para mudar entre temas **claro**, **escuro** e **system**.
 
-For the English version of this README, click [here](README_EN.md).´
+---
+
+## 🧪 Testes
+- Testes implementados com **Jest** e **Testing Library**.
+- Cobertura de testes para componentes principais e serviços de OCR.
+- Relatórios de qualidade e cobertura disponíveis no [SonarCloud](https://sonarcloud.io/summary/overall?id=fonteeboa_react-tesseract).
+
+---
+
+## 📜 Licença
+Este projeto está licenciado sob a [Licença MIT](LICENSE).

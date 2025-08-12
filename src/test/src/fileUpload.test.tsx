@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import FileUpload from '../../components/FileUpload';
-import { FileUploadProps } from '../../domain';
+import { FileUploadProps } from '../../types';
 
 // Mock for i18next
 jest.mock('react-i18next', () => ({

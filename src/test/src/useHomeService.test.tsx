@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
-import { processImage } from '../../services/ocrService';
+import { extractTextFromFile } from '../../services/ocrService';
 import { useHomeService } from '../../services/homeService';
 
 // Mock for i18next
@@ -27,7 +27,7 @@ const TestComponent = () => {
     handleFileChange,
     handleFileUpload,
     handleCopyToClipboard,
-    toggleTheme,
+    toggleThemeService,
   } = useHomeService();
 
   return (
@@ -43,9 +43,8 @@ const TestComponent = () => {
       </button>
       <button onClick={handleFileUpload} data-testid="process-button">Process File</button>
       <button onClick={handleCopyToClipboard} data-testid="copy-button">Copy to Clipboard</button>
-      <button onClick={toggleTheme} data-testid="theme-button">Toggle Theme</button>
+      <button onClick={toggleThemeService} data-testid="theme-button">Toggle Theme</button>
       <div data-testid="ocr-text">{ocrText}</div>
-      <div data-testid="theme-mode">{theme.palette.mode}</div>
     </div>
   );
 };
@@ -82,7 +81,7 @@ describe('useHomeService', () => {
   });
 
   it('should handle file upload successfully', async () => {
-    (processImage as jest.Mock).mockResolvedValue('extracted text');
+    (extractTextFromFile as jest.Mock).mockResolvedValue('extracted text');
     const file = new File(['dummy content'], 'example.png', { type: 'image/png' });
     render(<TestComponent />);
 
@@ -92,7 +91,7 @@ describe('useHomeService', () => {
     fireEvent.click(screen.getByTestId('process-button'));
 
     await waitFor(() => {
-      expect(processImage).toHaveBeenCalledWith(file);
+      expect(extractTextFromFile).toHaveBeenCalledWith(file);
       expect(screen.getByTestId('ocr-text')).toHaveTextContent('extracted text');
     });
 
@@ -100,7 +99,7 @@ describe('useHomeService', () => {
   });
 
   it('should handle file upload error', async () => {
-    (processImage as jest.Mock).mockRejectedValue(new Error('Processing error'));
+    (extractTextFromFile as jest.Mock).mockRejectedValue(new Error('Processing error'));
     const file = new File(['dummy content'], 'example.png', { type: 'image/png' });
     render(<TestComponent />);
 
@@ -110,7 +109,7 @@ describe('useHomeService', () => {
     fireEvent.click(screen.getByTestId('process-button'));
 
     await waitFor(() => {
-      expect(processImage).toHaveBeenCalledWith(file);
+      expect(extractTextFromFile).toHaveBeenCalledWith(file);
       expect(screen.getByTestId('ocr-text')).toHaveTextContent('');
     });
 

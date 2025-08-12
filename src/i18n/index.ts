@@ -1,44 +1,96 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import { detectLanguage } from '../services/languageService';
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import { detectLanguage } from "../services/languageService";
 
 const resources = {
   en: {
     translation: {
-      "title": "Image to Text",
-      "toggle_theme": "Toggle light/dark theme",
-      "help_text": "How to use: Upload an image and click 'Convert' to extract text.",
-      "extracted_text": "Extracted Text",
-      "copy_to_clipboard": "Copy to Clipboard",
-      "upload_and_convert": "Upload and Convert",
-      "text_copied_to_clipboard": "Text copied to clipboard",
-      "error_processing_image": "Error processing the image. Please try again.",
-      "error_copying_text": "Error copying text to clipboard. Please try again."
-    }
+      title: "Tesseract",
+      "toggle.theme": "Toggle light/dark theme",
+      "extracted.text": "Extracted Text",
+      "copy.to.clipboard": "Copy to Clipboard",
+      "select.file": "Select file",
+      "supported.formats": "Supported formats: PDF, PNG, JPG, SVG, HTML, TXT, CSV",
+      "selected.file.name": "Selected file",
+      processing: "Processing...",
+      "extract.text": "Extract text",
+      "pdf.page": "Page {{index}}",
+      "pdf.native.text": "native text",
+      "pdf.ocr.text": "OCR text",
+      "pdf.section.header": "=== {{page}} ({{kind}}) ===",
+      "pdf.errors.processing.file": "Error processing file",
+      "notify.pending": "Processing…",
+      "notify.success.extract": "Text extracted successfully!",
+      "notify.error.extract": "Failed to extract text.",
+      "notify.empty.result": "No readable text was found.",
+      "notify.file.too.large": "The selected file is too large (max {{maxMB}} MB).",
+      "notify.file.selected": "Selected file: {{name}}",
+      "notify.no.file": "Please select a file first.",
+      "notify.copied": "Copied to clipboard!",
+      "notify.copy.failed": "Could not copy to clipboard.",
+      "welcome.title": "Turn documents into text in seconds",
+      "welcome.subtitle":
+        "Upload a PDF, image, or HTML and we will extract the readable text for you fast and locally.",
+      start: "Start",
+      "tab.intro": "Intro",
+      "tab.upload": "Upload",
+      "tab.result": "Result",
+      "new.item": "New extraction",
+      "notify.success": "Done!",
+      "notify.error": "Something went wrong.",
+      "notify.dismiss": "Dismiss",
+      "text.will.appear.here": "The text will appear here",
+      "upload.file.to.start": "Upload a file to start",
+    },
   },
   pt: {
     translation: {
-      "title": "Imagem para Texto",
-      "toggle_theme": "Alternar tema claro/escuro",
-      "help_text": "Como usar: Carregue uma imagem e clique em 'Converter' para extrair o texto.",
-      "extracted_text": "Texto Extraído",
-      "copy_to_clipboard": "Copiar para a Área de Transferência",
-      "upload_and_convert": "Carregar e Converter",
-      "text_copied_to_clipboard": "Texto copiado para a área de transferência",
-      "error_processing_image": "Erro ao processar a imagem. Por favor, tente novamente.",
-      "error_copying_text": "Erro ao copiar o texto para a área de transferência. Por favor, tente novamente."
-    }
-  }
+      title: "Tesseract",
+      "toggle.theme": "Alternar tema claro/escuro",
+      "extracted.text": "Texto Extraído",
+      "copy.to.clipboard": "Copiar para a Área de Transferência",
+      "select.file": "Selecionar arquivo",
+      "supported.formats": "Formatos suportados: PDF, PNG, JPG, SVG, HTML, TXT, CSV",
+      "selected.file.name": "Arquivo selecionado",
+      processing: "Processando...",
+      "extract.text": "Extrair texto",
+      "pdf.page": "Página {{index}}",
+      "pdf.native.text": "texto nativo",
+      "pdf.ocr.text": "texto via OCR",
+      "pdf.section.header": "=== {{page}} ({{kind}}) ===",
+      "pdf.errors.processing.file": "Erro ao processar arquivo",
+      "notify.pending": "Processando…",
+      "notify.success.extract": "Texto extraído com sucesso!",
+      "notify.error.extract": "Falha ao extrair o texto.",
+      "notify.empty.result": "Nenhum texto legível foi encontrado.",
+      "notify.file.too.large": "O arquivo selecionado é muito grande (máx. {{maxMB}} MB).",
+      "notify.file.selected": "Arquivo selecionado: {{name}}",
+      "notify.no.file": "Selecione um arquivo primeiro.",
+      "notify.copied": "Copiado para a área de transferência!",
+      "notify.copy.failed": "Não foi possível copiar para a área de transferência.",
+      "welcome.title": "Transforme documentos em texto em segundos",
+      "welcome.subtitle": "Envie um PDF, imagem ou HTML e extrairemos o texto legível para você rápido e localmente.",
+      start: "Começar",
+      "tab.intro": "Início",
+      "tab.upload": "Upload",
+      "tab.result": "Resultado",
+      "new.item": "Nova extração",
+      "notify.success": "Concluído!",
+      "notify.error": "Algo deu errado.",
+      "notify.dismiss": "Fechar",
+      "text.will.appear.here": "O texto aparecerá aqui",
+      "upload.file.to.start": "Envie um arquivo para começar",
+    },
+  },
 };
 
-i18n
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: detectLanguage(),
-    interpolation: {
-      escapeValue: false
-    }
-  });
+i18n.use(initReactI18next).init({
+  resources,
+  lng: detectLanguage(),
+  fallbackLng: "en",
+  interpolation: {
+    escapeValue: false,
+  },
+});
 
 export default i18n;

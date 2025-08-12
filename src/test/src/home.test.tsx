@@ -50,12 +50,12 @@ describe('Home', () => {
   it('should render correctly', () => {
     renderWithTheme(<Home />);
     expect(screen.getByText('title')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'toggle_theme' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'toggle.theme' })).toBeInTheDocument();
   });
 
   it('should call toggleTheme when theme button is clicked', () => {
     renderWithTheme(<Home />);
-    const themeButton = screen.getByRole('button', { name: 'toggle_theme' });
+    const themeButton = screen.getByRole('button', { name: 'toggle.theme' });
     fireEvent.click(themeButton);
     expect(mockUseHomeService.toggleTheme).toHaveBeenCalledTimes(1);
   });
@@ -76,7 +76,7 @@ describe('Home', () => {
 
   it('should handle copy to clipboard', () => {
     renderWithTheme(<Home />);
-    const copyButton = screen.getByRole('button', { name: 'copy_to_clipboard' });
+    const copyButton = screen.getByRole('button', { name: 'copy.to.clipboard' });
     fireEvent.click(copyButton);
     expect(mockUseHomeService.handleCopyToClipboard).toHaveBeenCalledTimes(1);
   });

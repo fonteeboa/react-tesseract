@@ -1,9 +1,9 @@
 import Tesseract from 'tesseract.js';
-import { processImage } from '../../services/ocrService';
+import { extractTextFromFile } from '../../services/ocrService';
 
 jest.mock('tesseract.js');
 
-describe('processImage', () => {
+describe('extractTextFromFile', () => {
   const mockRecognize = jest.fn();
   const mockTerminate = jest.fn();
   const mockCreateWorker = jest.fn().mockResolvedValue({
@@ -21,7 +21,7 @@ describe('processImage', () => {
     const recognizedText = 'extracted text';
     mockRecognize.mockResolvedValue({ data: { text: recognizedText } });
 
-    const result = await processImage(file);
+    const result = await extractTextFromFile(file);
 
     expect(Tesseract.createWorker).toHaveBeenCalledWith([
       'eng', 'spa', 'fra', 'deu', 'ita', 'por', 'rus', 'jpn', 'chi_sim', 'chi_tra',
